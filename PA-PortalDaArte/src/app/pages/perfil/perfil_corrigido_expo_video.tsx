@@ -35,7 +35,7 @@ import {
   X,
 } from "lucide-react-native";
 
-import { ResizeMode, Video } from "expo-av";
+import { useVideoPlayer, VideoView } from "expo-video";
 import * as DocumentPicker from "expo-document-picker";
 
 import Header from "../../../components/Header";
@@ -76,6 +76,22 @@ const FIXED_CATEGORIES = [
   "Performance • Eventos e Casamentos",
   "Outros • Artista Independente",
 ];
+
+function FullscreenVideoPlayer({ uri, style }: { uri: string; style: any }) {
+  const player = useVideoPlayer(uri, (videoPlayer) => {
+    videoPlayer.play();
+  });
+
+  return (
+    <VideoView
+      player={player}
+      style={style}
+      nativeControls
+      contentFit="contain"
+      allowsFullscreen
+    />
+  );
+}
 
 export default function IndexScreen() {
   const { theme, isLightMode } = useTheme();
@@ -1389,12 +1405,9 @@ export default function IndexScreen() {
             <X size={26} color="#FFFFFF" />
           </TouchableOpacity>
           {viewerMediaUri && viewerMediaType === "video" ? (
-            <Video
-              source={{ uri: viewerMediaUri }}
+            <FullscreenVideoPlayer
+              uri={viewerMediaUri}
               style={styles.viewerImage}
-              useNativeControls
-              resizeMode={ResizeMode.CONTAIN}
-              shouldPlay
             />
           ) : viewerMediaUri ? (
             <Image
